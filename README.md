@@ -9,6 +9,13 @@ Su objetivo es recopilar ofertas laborales desde múltiples fuentes, almacenarla
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
 ---
+## Estado del proyecto
+
+Versión actual: 0.3.0  
+Backend funcional con persistencia en PostgreSQL  
+Arquitectura en proceso de modularización
+---
+
 
 ## Objetivos
 
@@ -54,12 +61,9 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 src/
 └── job_hunter/
     ├── config/
-    ├── core/
     ├── models/
-    ├── providers/
     ├── repositories/
     ├── services/
-    ├── utils/
     └── main.py
 ```
 
@@ -67,7 +71,7 @@ src/
 
 ## Estado Actual
 
-Versión: **0.2.0**
+Versión: **0.3.0**
 
 ### Completado
 
@@ -76,13 +80,16 @@ Versión: **0.2.0**
 * [x] Configuración Docker
 * [x] PostgreSQL en contenedor Docker
 
+* [x] Configuración SQLAlchemy
+* [x] Conexión Python → PostgreSQL
+* [x] Modelo Job
+* [x] Persistencia básica
+
 ### Próximos Pasos
-
-* [ ] Configuración SQLAlchemy
-* [ ] Conexión Python → PostgreSQL
-* [ ] Modelo Job
-* [ ] Persistencia básica
-
+* [ ] Separación arquitectura (Repository / Service Layer)
+* [ ] Refactor de main.py
+* [ ] Primer módulo de scraping
+* [ ] Normalización de datos de vacantes
 ---
 
 ## Instalación

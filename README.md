@@ -11,9 +11,10 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ---
 ## Estado del proyecto
 
-Versión actual: 0.4.0
+Versión actual: 0.4.1
 Backend funcional con persistencia en PostgreSQL
 Arquitectura modular Repository-Service implementada
+Preparado para integración de fuentes reales de vacantes
 
 ---
 
@@ -71,7 +72,7 @@ src/
 
 ## Estado Actual
 
-Versión: **0.3.0**
+Versión: **0.4.1**
 
 ### Completado
 

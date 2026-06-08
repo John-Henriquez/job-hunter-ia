@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.4.0] 2026-06-08
+
+### Added
+
+- Repository Layer
+- Service Layer
+- JobRepository
+- JobService
+- CRUD básico para entidad Job
+- Separación de responsabilidades entre acceso a datos y lógica de negocio
+- Persistencia desacoplada mediante SQLAlchemy
+
+### Changed
+
+- Refactor de main.py
+- Arquitectura modular consolidada
 
 ## [v0.3.0] 2026-06-08
 ### Added

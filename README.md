@@ -11,11 +11,11 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ---
 ## Estado del proyecto
 
-Versión actual: 0.3.0  
-Backend funcional con persistencia en PostgreSQL  
-Arquitectura en proceso de modularización
----
+Versión actual: 0.4.0
+Backend funcional con persistencia en PostgreSQL
+Arquitectura modular Repository-Service implementada
 
+---
 
 ## Objetivos
 
@@ -85,11 +85,16 @@ Versión: **0.3.0**
 * [x] Modelo Job
 * [x] Persistencia básica
 
+* [x] Repository Layer
+* [x] Service Layer
+* [x] CRUD básico de Jobs
+* [x] Refactor de main.py
+
 ### Próximos Pasos
-* [ ] Separación arquitectura (Repository / Service Layer)
-* [ ] Refactor de main.py
 * [ ] Primer módulo de scraping
 * [ ] Normalización de datos de vacantes
+* [ ] Implementación de Providers
+* [ ] Persistencia desacoplada de fuentes externas
 ---
 
 ## Instalación
@@ -128,10 +133,15 @@ docker compose up -d
 ### v0.4.0
 
 * Persistencia de datos
+* Repository Layer
+* Service Layer
+* CRUD básico de Jobs
 
 ### v0.5.0
 
-* Primer proveedor de vacantes
+* Primer Provider
+* Scraping de vacantes reales
+* Integración fuente → base de datos
 
 ### v1.0.0
 

@@ -118,35 +118,54 @@ docker compose up -d
 
 ## Roadmap
 
-### v0.1.0
-
+### v0.1.0 ✅
 * Estructura base del proyecto
 
-### v0.2.0
-
+### v0.2.0 ✅
 * Docker y PostgreSQL
 
-### v0.3.0
+### v0.3.0 ✅
+* SQLAlchemy
+* Modelo Job
+* Conexión con PostgreSQL
 
-* Conexión SQLAlchemy
-* Entidades principales
-
-### v0.4.0
-
-* Persistencia de datos
-* Repository Layer
+### v0.4.0 ✅
+* Repository Pattern
 * Service Layer
-* CRUD básico de Jobs
+* Persistencia desacoplada
+
+### v0.4.1 ✅
+* Arquitectura de Providers
+* BaseProvider
+* GetOnBoardProvider (stub)
+* Limpieza de flujo de pruebas
 
 ### v0.5.0
+* Integración real con GetOnBoard
+* Descarga automática de vacantes
+* Conversión a entidades Job
+* Persistencia automática
+* Prevención de duplicados
 
-* Primer Provider
-* Scraping de vacantes reales
-* Integración fuente → base de datos
+### v0.6.0
+* Segundo proveedor de vacantes
+* Normalización de datos entre fuentes
+
+### v0.7.0
+* Sistema de filtros
+* Búsqueda por tecnologías
+* Ranking inicial de vacantes
+
+### v0.8.0
+* Dashboard de estadísticas
+* Métricas de búsqueda laboral
+
+### v0.9.0
+* Integración IA
+* Matching perfil ↔ vacantes
 
 ### v1.0.0
-
-* MVP funcional
+* MVP funcional completo
 
 ---
 

@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **0.5.5** — Pipeline de ingesta funcional con tests base establecidos.
+> Versión actual: **0.6.0** — Pipeline completo de ingesta y normalización funcional.
 
 ---
 
@@ -125,11 +125,12 @@ python -m job_hunter.main
 * 6 tests pasando (RawJobService + parse_jobs)
 * requirements.txt limpio
 
-### v0.6.0
+### v0.6.0✅
 * Normalización RawJob → Job
-* JobNormalizer como clase independiente
-* RawJob.processed = True tras normalización
-* Relación FK entre Job y RawJob
+* GetOnBoardNormalizer con cache lazy de companies
+* Lookup de seniorities y modalities
+* Campos seniority, modality, category en modelo Job
+* 1094 vacantes normalizadas, 0 fallos
 
 ### v0.7.0
 * Segundo proveedor de vacantes

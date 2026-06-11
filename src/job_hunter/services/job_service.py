@@ -9,26 +9,30 @@ class JobService:
     def create_job(
         self,
         title: str,
-        company: str,
-        location: str,
-        work_mode: str,
-        salary: str,
-        description: str,
-        source: str,
-        url: str,
+        company: str = None,
+        location: str = None,
+        work_mode: str = None,
+        salary: str = None,
+        seniority: str = None,
+        modality: str = None,
+        category: str = None,
+        description: str = None,
+        source: str = None,
+        url: str = None,
     ) -> Job:
-
         job = Job(
             title=title,
             company=company,
             location=location,
             work_mode=work_mode,
             salary=salary,
+            seniority=seniority,
+            modality=modality,
+            category=category,
             description=description,
             source=source,
             url=url,
         )
-
         return self.repository.create_job(job)
 
     def list_jobs(self) -> list[Job]:

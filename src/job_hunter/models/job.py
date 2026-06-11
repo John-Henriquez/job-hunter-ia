@@ -16,6 +16,10 @@ class Job(Base):
     work_mode = Column(String(50), nullable=True)  
     salary = Column(String(100), nullable=True)
 
+    seniority = Column(String(100), nullable=True)
+    modality = Column(String(100), nullable=True)
+    category = Column(String(100), nullable=True)
+    
     description = Column(Text, nullable=True)
 
     source = Column(String(100), nullable=True)  

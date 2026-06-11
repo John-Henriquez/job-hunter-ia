@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.6.0] - 2026-06-10
+
+### Added
+- Carpeta `normalizers/` con `BaseNormalizer` y `GetOnBoardNormalizer`
+- `GetOnBoardNormalizer` con cache lazy de companies (249 únicas)
+- Lookup completo de seniorities y modalities al inicializar
+- Campos `seniority`, `modality`, `category` en modelo `Job`
+- Pipeline completo: RawJob → normalización → Job persistido
+- `FetchService` actualizado para orquestar normalización post-fetch
+- `JobService.create_job` actualizado con campos nuevos
+
+### Changed
+- `main.py` actualizado con `JobRepository` y `GetOnBoardNormalizer`
+- `FetchService` recibe `job_repository` y `normalizer` como dependencias
+
+### Results
+- 1094 vacantes descargadas, normalizadas y persistidas
+- 0 fallos de normalización
+
 ## [v0.5.5] - 2026-06-10
 
 ### Added

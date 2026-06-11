@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **0.6.1** — Pipeline completo de ingesta y normalización funcional.
+> Versión actual: **0.7.0** — Pipeline multi-provider con CLI operativo.
 
 ---
 
@@ -138,10 +138,10 @@ python -m job_hunter.main
 * Refactor del punto de entrada principal
 * Separación definitiva entre bootstrap y lógica de negocio
 
-### v0.7.0
-* IndeedProvider con parser RSS
-* IndeedNormalizer
-* Deduplicación cross-provider por URL
+### v0.7.0✅
+* ArbeitnowProvider + ArbeitnowNormalizer
+* get_normalizer() en contrato BaseProvider
+* 2086 jobs de dos fuentes, 0 fallos
 
 ### v0.8.0
 * API REST con FastAPI

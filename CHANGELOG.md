@@ -1,13 +1,38 @@
 # Changelog
 
+## [v0.7.0] - 2026-06-11
+
+### Added
+- CLI con argparse: comandos `fetch` y `stats`
+- `fetch --provider {nombre}` para correr un provider específico
+- `ArbeitnowProvider` con paginación y delay anti rate-limit
+- `ArbeitnowNormalizer` con mapeo completo al modelo Job
+- `get_normalizer()` en `BaseProvider` como parte del contrato
+- Arquitectura multi-provider: cada provider lleva su propio normalizer
+
+### Changed
+- `BaseProvider` extendido con método abstracto `get_normalizer()`
+- `GetOnBoardProvider` implementa `get_normalizer()`
+- `FetchService` obtiene el normalizer desde el provider, no como dependencia externa
+- `main.py` refactorizado con argparse y función `build_registry()`
+- `external_id` en `RawJob` ampliado a VARCHAR(500)
+
+### Fixed
+- Rate limit 429 de Arbeitnow resuelto con delay de 2s entre páginas
+- StringDataRightTruncation en external_id resuelto ampliando columna
+
+### Results
+- 2086 jobs totales: 1102 GetOnBoard + 984 Arbeitnow
+- 0 fallos de normalización en ambos providers
+
 ## [v0.6.1] - 2026-06-10
 
 ### Added
 
-* Interfaz CLI inicial para ejecutar Job Hunter IA desde terminal.
-* Punto de entrada simplificado para operaciones de scraping y normalización.
-* Mensajes de ejecución y resultados estandarizados para el usuario.
-* Separación más clara entre bootstrap de aplicación y lógica de negocio.
+- Interfaz CLI inicial para ejecutar Job Hunter IA desde terminal.
+- Punto de entrada simplificado para operaciones de scraping y normalización.
+- Mensajes de ejecución y resultados estandarizados para el usuario.
+- Separación más clara entre bootstrap de aplicación y lógica de negocio.
 
 ### Changed
 
@@ -15,8 +40,8 @@
 
 ### Results
 
-* Pipeline completo de ingesta, persistencia y normalización accesible desde CLI.
-* Proyecto preparado para incorporación de nuevos providers sin modificar el punto de entrada principal.
+- Pipeline completo de ingesta, persistencia y normalización accesible desde CLI.
+- Proyecto preparado para incorporación de nuevos providers sin modificar el punto de entrada principal.
 
 
 ## [v0.6.0] - 2026-06-10

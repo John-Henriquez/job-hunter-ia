@@ -133,28 +133,30 @@ python -m job_hunter.main
 * 1094 vacantes normalizadas, 0 fallos
 
 ### v0.7.0
-* Segundo proveedor de vacantes
-* Normalización agnóstica al proveedor
-* Estandarización de datos entre fuentes
+* IndeedProvider con parser RSS
+* IndeedNormalizer
+* Deduplicación cross-provider por URL
 
 ### v0.8.0
-* API REST mínima con FastAPI
-* GET /jobs, GET /jobs/{id}
+* API REST con FastAPI
+* GET /jobs con filtros: category, seniority, modality, source
+* GET /jobs/{id}
+* GET /stats — totales por fuente, categoría, seniority
+* Documentación automática via /docs
 
 ### v0.9.0
-* Sistema de filtros y búsqueda por tecnologías
-* Scoring básico por relevancia
-* Matching perfil ↔ vacantes
+* Calidad de datos
+* Script de re-normalización sobre raw_jobs existentes
+* Limpieza de campos nulos críticos
+* Deduplicación cross-provider mejorada
 
-### v0.10.0
-* Integración IA
-* Embeddings semánticos
-* Matching inteligente
-
-### v1.0.0
-* MVP funcional completo
-* Automatización de postulaciones
-* Notificaciones
+### v1.0.0 — Cierre de portafolio
+* Frontend básico
+* Tabla de vacantes paginada
+* Filtros por fuente, categoría, seniority y modalidad
+* Vista detalle de cada vacante
+* docker compose up → sistema funcional completo sin configuración manual
+* README profesional con capturas y ejemplos de uso
 
 ---
 

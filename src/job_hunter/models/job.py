@@ -13,12 +13,12 @@ class Job(Base):
     company = Column(String(255), nullable=True)
     location = Column(String(255), nullable=True)
 
-    work_mode = Column(String(50), nullable=True)  # remoto, híbrido, presencial
+    work_mode = Column(String(50), nullable=True)  
     salary = Column(String(100), nullable=True)
 
     description = Column(Text, nullable=True)
 
-    source = Column(String(100), nullable=True)  # portal origen (linkedin, etc)
+    source = Column(String(100), nullable=True)  
     url = Column(String(500), nullable=True)
 
     published_at = Column(DateTime, nullable=True)

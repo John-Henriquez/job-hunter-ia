@@ -11,10 +11,10 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ---
 ## Estado del proyecto
 
-Versión actual: 0.4.1
+Versión actual: 0.5.0
 Backend funcional con persistencia en PostgreSQL
-Arquitectura modular Repository-Service implementada
-Preparado para integración de fuentes reales de vacantes
+Integración real con GetOnBoard API 
+Arquitectura modular Repository-Service-Provider implementada
 
 ---
 
@@ -72,7 +72,7 @@ src/
 
 ## Estado Actual
 
-Versión: **0.4.1**
+Versión: **0.5.0**
 
 ### Completado
 
@@ -91,11 +91,19 @@ Versión: **0.4.1**
 * [x] CRUD básico de Jobs
 * [x] Refactor de main.py
 
+* [x] Arquitectura de Providers
+* [x] BaseProvider
+* [x] GetOnBoardProvider integrado con API oficial
+* [x] Modelo RawJob (staging layer)
+* [x] RawJobRepository + RawJobService
+* [x] Descarga automática de vacantes por categoría
+* [x] Persistencia de vacantes crudas en PostgreSQL
+* [x] Prevención de duplicados por external_id
+
 ### Próximos Pasos
-* [ ] Primer módulo de scraping
-* [ ] Normalización de datos de vacantes
-* [ ] Implementación de Providers
-* [ ] Persistencia desacoplada de fuentes externas
+* [ ] Normalización de RawJob → Job
+* [ ] Segundo proveedor de vacantes
+* [ ] Sistema de filtros por tecnología
 ---
 
 ## Instalación
@@ -140,16 +148,17 @@ docker compose up -d
 * GetOnBoardProvider (stub)
 * Limpieza de flujo de pruebas
 
-### v0.5.0
+### v0.5.0✅
 * Integración real con GetOnBoard
 * Descarga automática de vacantes
-* Conversión a entidades Job
-* Persistencia automática
-* Prevención de duplicados
+* Modelo RawJob como capa de staging
+* RawJobRepository + RawJobService
+* Persistencia automática con prevención de duplicados
 
 ### v0.6.0
+* Normalización RawJob → Job
 * Segundo proveedor de vacantes
-* Normalización de datos entre fuentes
+* Estandarización de datos entre fuentes
 
 ### v0.7.0
 * Sistema de filtros

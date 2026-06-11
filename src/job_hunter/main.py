@@ -1,31 +1,48 @@
 from job_hunter.config.database import engine, SessionLocal, Base
-from job_hunter.repositories.job_repository import JobRepository
-from job_hunter.services.job_service import JobService
+from job_hunter.models.job import Job
+from job_hunter.models.raw_job import RawJob
+from job_hunter.repositories.raw_job_repository import RawJobRepository
+from job_hunter.services.raw_job_service import RawJobService
 from job_hunter.providers.getonboard_provider import GetOnBoardProvider
+
 
 
 def main():
     print(" Job Hunter AI iniciado...")
 
     Base.metadata.create_all(bind=engine)
-
     db = SessionLocal()
 
-    reporsitory = JobRepository(db)
-    service = JobService(reporsitory)
+    try: 
+        repository = RawJobRepository(db)
+        service = RawJobService(repository)
+        provider = GetOnBoardProvider()
 
-    provider = GetOnBoardProvider()
-    jobs_found = provider.fetch_jobs()
-    print(f"Vacantes encontradas: {len(jobs_found)}")
+        raw_jobs = provider.fetch_jobs()
+        parsed_jobs= provider.parse_jobs(raw_jobs)
 
-    jobs = service.list_jobs()
-    print("\nJobs en la base de datos:")
+        saved = 0
+        skipped = 0
 
-    for job in jobs:
-        print(
-            f"- {job.id} | {job.title} | {job.company}"
-        )
-    db.close()
+        for job in parsed_jobs:
+            existing = repository.get_by_external_id(job["external_id"])
+            if existing:
+                skipped += 1
+                continue
+
+            service.save_raw_job(
+                source = job["source"],
+                external_id = job["external_id"],
+                raw_payload = job["raw_payload"],
+            )
+            saved += 1
+
+            print(f"\Resultados:")
+            print(f" - Guardados: {saved}")
+            print(f" - Duplicados: {skipped}")
+
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     main()

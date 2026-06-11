@@ -1,5 +1,29 @@
 # Changelog
 
+## [v0.5.0] - 2026-06-10
+
+### Added
+- GetOnBoardProvider integrado con API pública oficial 
+- Descarga automática de vacantes iterando las categorías disponibles
+- Modelo RawJob como capa de staging con campo JSONB para payload crudo
+- RawJobRepository con métodos create, get_by_external_id, get_unprocessed
+- RawJobService con lógica de deduplicación por external_id
+- Persistencia de 1098+ vacantes en PostgreSQL en primera ejecución
+
+### Changed
+- main.py refactorizado para usar RawJobService en lugar de JobService
+- getonboard_provider.py reemplazado: eliminado curl_cffi y cookies hardcodeadas
+- database.py: dotenv_path explícito para resolver carga de variables de entorno
+- requirements.txt actualizado con dependencias limpias
+
+### Fixed
+- Resolución de problema de autenticación PostgreSQL por carga incorrecta del .env
+- Endpoint corregido de jobs.json (500) a /api/v0/categories/{id}/jobs
+
+### Notes
+- La API pública de GetOnBoard no requiere autenticación ni scraping
+- RawJob almacena el payload completo en JSONB para normalización posterior
+
 ## [v0.4.1] - 2026-06-08
 
 ### Added

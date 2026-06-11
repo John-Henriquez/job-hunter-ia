@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **0.6.0** — Pipeline completo de ingesta y normalización funcional.
+> Versión actual: **0.6.1** — Pipeline completo de ingesta y normalización funcional.
 
 ---
 
@@ -131,6 +131,13 @@ python -m job_hunter.main
 * Lookup de seniorities y modalities
 * Campos seniority, modality, category en modelo Job
 * 1094 vacantes normalizadas, 0 fallos
+
+### v0.6.1✅
+### v0.6.1 ✅
+* CLI inicial para ejecución del sistema
+* Pipeline completo ejecutable desde terminal
+* Refactor del punto de entrada principal
+* Separación definitiva entre bootstrap y lógica de negocio
 
 ### v0.7.0
 * IndeedProvider con parser RSS

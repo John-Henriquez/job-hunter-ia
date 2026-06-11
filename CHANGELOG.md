@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.6.1] - 2026-06-10
+
+### Added
+
+* Interfaz CLI inicial para ejecutar Job Hunter IA desde terminal.
+* Punto de entrada simplificado para operaciones de scraping y normalización.
+* Mensajes de ejecución y resultados estandarizados para el usuario.
+* Separación más clara entre bootstrap de aplicación y lógica de negocio.
+
+### Changed
+
+* Flujo principal reorganizado para soportar crecimiento futuro del CLI.
+
+### Results
+
+* Pipeline completo de ingesta, persistencia y normalización accesible desde CLI.
+* Proyecto preparado para incorporación de nuevos providers sin modificar el punto de entrada principal.
+
+
 ## [v0.6.0] - 2026-06-10
 
 ### Added

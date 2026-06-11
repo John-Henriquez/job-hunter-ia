@@ -11,7 +11,7 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ---
 ## Estado del proyecto
 
-Versión actual: 0.5.3
+Versión actual: 0.5.4
 Backend funcional con persistencia en PostgreSQL
 Integración real con GetOnBoard API 
 Arquitectura modular Repository-Service-Provider implementada
@@ -72,7 +72,7 @@ src/
 
 ## Estado Actual
 
-Versión: **0.5.3**
+Versión: **0.5.4**
 
 ### Completado
 
@@ -102,12 +102,12 @@ Versión: **0.5.3**
 * [x] Prevención de duplicados por external_id
 * [x] ProviderRegistry: register(), get_all(), get_by_name()
 
-### Próximos Pasos
+* [x] FetchService como orquestador del pipeline
+* [x] main.py reducido a punto de entrada puro
 
 ### Próximos Pasos
-* [ ] FetchService como orquestador del pipeline
-* [ ] main.py reducido a punto de entrada puro
 * [ ] Estructura de tests base
+* [ ] Tests de RawJobService y parse_jobs()
 * [ ] Normalización RawJob → Job
 
 ---
@@ -176,7 +176,7 @@ docker compose up -d
 * ProviderRegistry: register(), get_all(), get_by_name()
 * Providers desacoplados de main.py
 
-### v0.5.4
+### v0.5.4✅
 * FetchService como orquestador del pipeline fetch → parse → save
 * main.py reducido a punto de entrada puro (~10 líneas)
 

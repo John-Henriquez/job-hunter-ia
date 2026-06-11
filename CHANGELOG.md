@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.5.4] - 2026-06-10
+
+### Added
+- `FetchService` como orquestador del pipeline fetch → parse → save
+- `FetchService.run()` retorna dict con totales de guardados y duplicados
+
+### Changed
+- `main.py` reducido a punto de entrada puro (~15 líneas)
+- Lógica de iteración, conteo y persistencia movida completamente a `FetchService`
+
 ## [v0.5.3] - 2026-06-10
 
 ### Added

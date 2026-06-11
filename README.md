@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **0.7.0** — Pipeline multi-provider con CLI operativo.
+> Versión actual: **0.8.0** — API REST funcional con documentación automática.
 
 ---
 
@@ -143,12 +143,11 @@ python -m job_hunter.main
 * get_normalizer() en contrato BaseProvider
 * 2086 jobs de dos fuentes, 0 fallos
 
-### v0.8.0
+### v0.8.0 ✅
 * API REST con FastAPI
-* GET /jobs con filtros: category, seniority, modality, source
-* GET /jobs/{id}
-* GET /stats — totales por fuente, categoría, seniority
-* Documentación automática via /docs
+* GET /jobs/, GET /jobs/{id}, GET /stats/, GET /health
+* Filtros por source, category, seniority, modality
+* Swagger UI en /docs
 
 ### v0.9.0
 * Calidad de datos

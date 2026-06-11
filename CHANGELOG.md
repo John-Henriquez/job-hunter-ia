@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.8.0] - 2026-06-11
+
+### Added
+- API REST con FastAPI
+- GET /jobs/ con filtros: source, category, seniority, modality, page, per_page
+- GET /jobs/{job_id} con detalle completo incluyendo description
+- GET /stats/ con totales por fuente, categoría, seniority y modality
+- GET /health con versión del sistema
+- Documentación automática en /docs
+- Estructura api/: app.py, server.py, dependencies.py, routers/
+
+### Results
+- 2086 vacantes consultables via API REST
+- Swagger UI funcional en http://localhost:8000/docs
+
 ## [v0.7.0] - 2026-06-11
 
 ### Added

@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.5.2] - 2026-06-10
+
+### Changed
+- `BaseProvider` refactorizado con contrato robusto
+- `source_name` y `source_version` como propiedades abstractas obligatorias
+- `is_active` con valor por defecto `True` para desactivar providers sin eliminarlos
+- `parse_jobs()` incorporado al contrato como método abstracto con firma tipada
+- `GetOnBoardProvider` actualizado para cumplir el nuevo contrato
+- Constante `SOURCE` reemplazada por propiedad `source_name`
+
 ## [v0.5.1] - 2026-06-10
 
 ### Changed

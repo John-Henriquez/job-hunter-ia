@@ -5,8 +5,15 @@ from job_hunter.providers.base_provider import BaseProvider
 class GetOnBoardProvider(BaseProvider):
 
     BASE_URL = "https://www.getonbrd.com/api/v0"
-    SOURCE = "getonboard"
     PER_PAGE = 100
+
+    @property
+    def source_name(self) -> str:
+        return "getonboard"
+    
+    @property
+    def source_version(self) -> str:
+        return "1.0"
 
     def _get_categories(self):
         response = requests.get(
@@ -41,9 +48,9 @@ class GetOnBoardProvider(BaseProvider):
     def fetch_jobs(self):
         all_jobs = []
 
-        print(f"[{self.SOURCE}] Obteniendo categorías...")
+        print(f"[{self.source_name}] Obteniendo categorías...")
         categories = self._get_categories()
-        print(f"[{self.SOURCE}] {len(categories)} categorías encontradas")
+        print(f"[{self.source_name}] {len(categories)} categorías encontradas")
 
         for cat in categories:
             cat_id = cat.get("id")
@@ -51,22 +58,23 @@ class GetOnBoardProvider(BaseProvider):
 
             try:
                 jobs = self._get_jobs_for_category(cat_id)
-                print(f"[{self.SOURCE}] {cat_name}: {len(jobs)} vacantes")
+                print(f"[{self.source_name}] {cat_name}: {len(jobs)} vacantes")
                 all_jobs.extend(jobs)
             except requests.RequestException as e:
-                print(f"[{self.SOURCE}] Error en categoría {cat_name}: {e}")
+                print(f"[{self.source_name}] Error en categoría {cat_name}: {e}")
 
-        print(f"[{self.SOURCE}] Total descargadas: {len(all_jobs)}")
+        print(f"[{self.source_name}] Total descargadas: {len(all_jobs)}")
         return all_jobs
 
-    def parse_jobs(self, raw_jobs):
+    def parse_jobs(self, raw_jobs: list) -> list[dict]:
         parsed = []
         for item in raw_jobs:
             external_id = str(item.get("id", ""))
             if not external_id:
                 continue
+
             parsed.append({
-                "source": self.SOURCE,
+                "source": self.source_name,
                 "external_id": external_id,
                 "raw_payload": item,
             })

@@ -95,7 +95,7 @@ python -m job_hunter.main
 ### v0.4.1 ✅
 * Arquitectura de Providers, BaseProvider, GetOnBoardProvider (stub)
 
-### v0.5.0✅
+### v0.5.0 ✅
 * Integración real con GetOnBoard
 * Descarga automática de vacantes
 * Modelo RawJob como capa de staging
@@ -107,32 +107,31 @@ python -m job_hunter.main
 * DB_ECHO configurable via .env
 * Correcciones en main.py
 
-### v0.5.2✅
+### v0.5.2 ✅
 * BaseProvider con contrato robusto
 * source_name, source_version, is_active
 * parse_jobs() abstracto y tipado
 
-### v0.5.3✅
+### v0.5.3 ✅
 * ProviderRegistry: register(), get_all(), get_by_name()
 * Providers desacoplados de main.py
 
-### v0.5.4✅
+### v0.5.4 ✅
 * FetchService como orquestador del pipeline
 * main.py reducido a punto de entrada puro
 
-### v0.5.5✅
+### v0.5.5 ✅
 * Estructura tests/ establecida
 * 6 tests pasando (RawJobService + parse_jobs)
 * requirements.txt limpio
 
-### v0.6.0✅
+### v0.6.0 ✅
 * Normalización RawJob → Job
 * GetOnBoardNormalizer con cache lazy de companies
 * Lookup de seniorities y modalities
 * Campos seniority, modality, category en modelo Job
 * 1094 vacantes normalizadas, 0 fallos
 
-### v0.6.1✅
 ### v0.6.1 ✅
 * CLI inicial para ejecución del sistema
 * Pipeline completo ejecutable desde terminal

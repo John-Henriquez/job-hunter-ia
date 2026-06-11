@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from job_hunter.models.job import Job
 from job_hunter.repositories.job_repository import JobRepository
 
@@ -19,6 +21,7 @@ class JobService:
         description: str = None,
         source: str = None,
         url: str = None,
+        published_at: datetime = None,
     ) -> Job:
         job = Job(
             title=title,
@@ -32,6 +35,7 @@ class JobService:
             description=description,
             source=source,
             url=url,
+            published_at=published_at,
         )
         return self.repository.create_job(job)
 

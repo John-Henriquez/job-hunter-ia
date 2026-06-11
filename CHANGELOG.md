@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.9.0] - 2026-06-11
+
+### Fixed
+- `published_at` corregido en todos los jobs (2086/2086)
+- `work_mode` normalizado a 3 valores: remote, hybrid, on-site
+- `published_at` agregado al flujo create_job en FetchService y JobService
+- Normalizers corregidos para persistir published_at correctamente
+
+### Changed
+- `job_service.py` acepta `published_at` como parámetro
+- `fetch_service.py` pasa `published_at` al crear Job
+- Mapeo de work_mode: fully_remote/remote_local → remote, no_remote → on-site
+
 ## [v0.8.0] - 2026-06-11
 
 ### Added

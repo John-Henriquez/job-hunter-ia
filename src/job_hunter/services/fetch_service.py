@@ -61,6 +61,7 @@ class FetchService:
                         description=normalized.description,
                         source=normalized.source,
                         url=normalized.url,
+                        published_at=normalized.published_at,
                     )
                     total_normalized += 1
                 else:

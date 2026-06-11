@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **0.8.0** — API REST funcional con documentación automática.
+> Versión actual: **0.9.0** — Datos limpios, calidad de normalización completa.
 
 ---
 
@@ -149,11 +149,10 @@ python -m job_hunter.main
 * Filtros por source, category, seniority, modality
 * Swagger UI en /docs
 
-### v0.9.0
-* Calidad de datos
-* Script de re-normalización sobre raw_jobs existentes
-* Limpieza de campos nulos críticos
-* Deduplicación cross-provider mejorada
+### v0.9.0 ✅
+* published_at corregido en 2086/2086 jobs
+* work_mode normalizado a 3 valores: remote, hybrid, on-site
+* Pipeline de normalización corregido para nuevos fetches
 
 ### v1.0.0 — Cierre de portafolio
 * Frontend básico

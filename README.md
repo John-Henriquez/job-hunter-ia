@@ -11,7 +11,7 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ---
 ## Estado del proyecto
 
-Versión actual: 0.5.0
+Versión actual: 0.5.1
 Backend funcional con persistencia en PostgreSQL
 Integración real con GetOnBoard API 
 Arquitectura modular Repository-Service-Provider implementada
@@ -72,7 +72,7 @@ src/
 
 ## Estado Actual
 
-Versión: **0.5.0**
+Versión: **0.5.1**
 
 ### Completado
 
@@ -155,26 +155,60 @@ docker compose up -d
 * RawJobRepository + RawJobService
 * Persistencia automática con prevención de duplicados
 
+### v0.5.1 ✅
+* Limpieza de dependencias muertas (curl_cffi)
+* DB_ECHO configurable via .env
+* Deduplicación delegada completamente al service
+* Correcciones menores en main.py
+
+### v0.5.2
+* BaseProvider con contrato robusto (source_name, source_version, is_active)
+* parse_jobs() como método abstracto obligatorio
+* GetOnBoardProvider actualizado al nuevo contrato
+
+### v0.5.3
+* ProviderRegistry: register(), get_all(), get_by_name()
+* Providers desacoplados de main.py
+
+### v0.5.4
+* FetchService como orquestador del pipeline fetch → parse → save
+* main.py reducido a punto de entrada puro (~10 líneas)
+
+### v0.5.5
+* Estructura tests/ establecida
+* Tests de RawJobService con mock de repository
+* Tests de parse_jobs() con payload fijo
+
 ### v0.6.0
 * Normalización RawJob → Job
-* Segundo proveedor de vacantes
-* Estandarización de datos entre fuentes
+* JobNormalizer como clase independiente
+* RawJob.processed = True tras normalización
+* Relación FK entre Job y RawJob
 
 ### v0.7.0
-* Sistema de filtros
-* Búsqueda por tecnologías
-* Ranking inicial de vacantes
+* Segundo proveedor de vacantes
+* Normalización agnóstica al proveedor
+* Estandarización de datos entre fuentes
 
 ### v0.8.0
-* Dashboard de estadísticas
-* Métricas de búsqueda laboral
+* API REST mínima con FastAPI
+* GET /jobs, GET /jobs/{id}
+* Reemplaza necesidad de cliente visual para observabilidad
 
 ### v0.9.0
-* Integración IA
+* Sistema de filtros y búsqueda por tecnologías
+* Scoring básico por relevancia
 * Matching perfil ↔ vacantes
+
+### v0.10.0
+* Integración IA
+* Embeddings semánticos
+* Matching inteligente
 
 ### v1.0.0
 * MVP funcional completo
+* Automatización de postulaciones
+* Notificaciones
 
 ---
 

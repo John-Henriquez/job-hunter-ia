@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.5.1] - 2026-06-10
+
+### Changed
+- `echo=True` reemplazado por variable de entorno `DB_ECHO` en `database.py`
+- Deduplicación de `main.py` delegada completamente a `RawJobService`
+- Print de resultados movido fuera del loop en `main.py`
+
+### Fixed
+- Typo `reporsitory` → `repository` en `main.py`
+- Typo `\Resultados` → `\nResultados` en `main.py`
+
+### Removed
+- `curl_cffi`, `cffi` y `pycparser` eliminados de `requirements.txt`
+
 ## [v0.5.0] - 2026-06-10
 
 ### Added

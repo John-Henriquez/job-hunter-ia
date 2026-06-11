@@ -19,7 +19,8 @@ DATABASE_URL = (
 )
 
 # 3. engine (conexión a la base de datos)
-engine = create_engine(DATABASE_URL, echo=True)
+DB_ECHO = os.getenv("DB_ECHO", "false").lower() == "true"
+engine = create_engine(DATABASE_URL, echo=DB_ECHO)
 
 # 4. sesiones
 SessionLocal = sessionmaker(

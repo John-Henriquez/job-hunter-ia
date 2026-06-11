@@ -25,21 +25,19 @@ def main():
         skipped = 0
 
         for job in parsed_jobs:
-            existing = repository.get_by_external_id(job["external_id"])
-            if existing:
-                skipped += 1
-                continue
-
-            service.save_raw_job(
-                source = job["source"],
-                external_id = job["external_id"],
-                raw_payload = job["raw_payload"],
+            result = service.save_raw_job(
+                source=job["source"],
+                external_id=job["external_id"],
+                raw_payload=job["raw_payload"],
             )
-            saved += 1
+            if result.scraped_at and result.external_id == job["external_id"]:
+                saved += 1
 
-            print(f"\Resultados:")
-            print(f" - Guardados: {saved}")
-            print(f" - Duplicados: {skipped}")
+        skipped = len(parsed_jobs) - saved
+
+        print(f"\nResultados:")
+        print(f"  Guardados : {saved}")
+        print(f"  Duplicados: {skipped}")
 
     finally:
         db.close()

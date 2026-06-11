@@ -1,18 +1,19 @@
-import argparse
 from job_hunter.config.database import engine, SessionLocal, Base
 from job_hunter.models.job import Job
 from job_hunter.models.raw_job import RawJob
 from job_hunter.providers.registry import ProviderRegistry
 from job_hunter.providers.getonboard_provider import GetOnBoardProvider
+from job_hunter.providers.arbeitnow_provider import ArbeitnowProvider
 from job_hunter.repositories.raw_job_repository import RawJobRepository
 from job_hunter.repositories.job_repository import JobRepository
 from job_hunter.services.fetch_service import FetchService
-from job_hunter.normalizers.getonboard_normalizer import GetOnBoardNormalizer
+import argparse
 
 
 def build_registry() -> ProviderRegistry:
     registry = ProviderRegistry()
     registry.register(GetOnBoardProvider())
+    registry.register(ArbeitnowProvider())
     return registry
 
 
@@ -33,13 +34,11 @@ def cmd_fetch(args):
 
         raw_repository = RawJobRepository(db)
         job_repository = JobRepository(db)
-        normalizer = GetOnBoardNormalizer()
 
         fetch_service = FetchService(
             registry=registry,
             raw_repository=raw_repository,
             job_repository=job_repository,
-            normalizer=normalizer,
         )
         fetch_service.run()
     finally:
@@ -84,7 +83,7 @@ def main():
     fetch_parser.add_argument(
         "--provider",
         type=str,
-        help="Nombre del provider (ej: getonboard, indeed). Sin argumento corre todos.",
+        help="Nombre del provider. Sin argumento corre todos.",
         default=None,
     )
 

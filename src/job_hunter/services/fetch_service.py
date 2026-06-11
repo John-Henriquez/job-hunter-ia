@@ -3,7 +3,6 @@ from job_hunter.services.raw_job_service import RawJobService
 from job_hunter.services.job_service import JobService
 from job_hunter.repositories.raw_job_repository import RawJobRepository
 from job_hunter.repositories.job_repository import JobRepository
-from job_hunter.normalizers.base_normalizer import BaseNormalizer
 
 
 class FetchService:
@@ -13,13 +12,11 @@ class FetchService:
         registry: ProviderRegistry,
         raw_repository: RawJobRepository,
         job_repository: JobRepository,
-        normalizer: BaseNormalizer,
     ):
         self.registry = registry
         self.raw_service = RawJobService(raw_repository)
         self.job_service = JobService(job_repository)
         self.raw_repository = raw_repository
-        self.normalizer = normalizer
 
     def run(self) -> dict:
         total_saved = 0
@@ -29,6 +26,7 @@ class FetchService:
 
         for provider in self.registry.get_all():
             print(f"\n[{provider.source_name}] Iniciando fetch...")
+            normalizer = provider.get_normalizer()
 
             raw_jobs = provider.fetch_jobs()
             parsed_jobs = provider.parse_jobs(raw_jobs)
@@ -49,7 +47,7 @@ class FetchService:
                 )
                 saved += 1
 
-                normalized = self.normalizer.normalize(job["raw_payload"])
+                normalized = normalizer.normalize(job["raw_payload"])
                 if normalized:
                     self.job_service.create_job(
                         title=normalized.title,

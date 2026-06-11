@@ -18,7 +18,7 @@ class RawJob(Base):
 
     source = Column(String(100), nullable=False)
 
-    external_id = Column(String(100), nullable=False)
+    external_id = Column(String(500), nullable=False)
 
     raw_payload = Column(JSONB, nullable=False)
 

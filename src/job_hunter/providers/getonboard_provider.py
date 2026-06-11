@@ -1,5 +1,6 @@
 import requests
 from job_hunter.providers.base_provider import BaseProvider
+from job_hunter.normalizers.base_normalizer import BaseNormalizer
 
 
 class GetOnBoardProvider(BaseProvider):
@@ -79,3 +80,7 @@ class GetOnBoardProvider(BaseProvider):
                 "raw_payload": item,
             })
         return parsed
+    
+    def get_normalizer(self) -> BaseNormalizer:
+        from job_hunter.normalizers.getonboard_normalizer import GetOnBoardNormalizer
+        return GetOnBoardNormalizer()

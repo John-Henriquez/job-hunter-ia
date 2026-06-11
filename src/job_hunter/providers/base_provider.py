@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from job_hunter.normalizers.base_normalizer import BaseNormalizer
 
 
 class BaseProvider(ABC):
@@ -28,4 +29,9 @@ class BaseProvider(ABC):
     @abstractmethod
     def parse_jobs(self, raw_jobs: list) -> list[dict]:
         """Convierte las vacantes crudas en un formato estandarizado."""
+        pass
+
+    @abstractmethod
+    def get_normalizer(self) -> BaseNormalizer:
+        """Retorna el normalizer asociado a este provider."""
         pass

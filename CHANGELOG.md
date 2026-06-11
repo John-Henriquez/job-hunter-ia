@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.5.5] - 2026-06-10
+
+### Added
+- Estructura `tests/` en raíz del proyecto
+- `tests/test_raw_job_service.py`: 2 tests con mocks (nuevo y duplicado)
+- `tests/test_getonboard_provider.py`: 4 tests de parse_jobs()
+- pytest agregado a requirements.txt
+
+### Fixed
+- curl_cffi, cffi y pycparser eliminados definitivamente de requirements.txt
+
 ## [v0.5.4] - 2026-06-10
 
 ### Added

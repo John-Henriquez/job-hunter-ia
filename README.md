@@ -4,17 +4,11 @@
 
 Job Hunter IA es una plataforma de automatización para búsqueda laboral enfocada en perfiles tecnológicos.
 
-Su objetivo es recopilar ofertas laborales desde múltiples fuentes, almacenarlas en una base de datos centralizada y analizarlas en función del perfil profesional del usuario para identificar oportunidades relevantes y optimizar el proceso de postulación.
+Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de datos centralizada y las analiza en función del perfil profesional del usuario para identificar oportunidades relevantes y optimizar el proceso de postulación.
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
----
-## Estado del proyecto
-
-Versión actual: 0.5.4
-Backend funcional con persistencia en PostgreSQL
-Integración real con GetOnBoard API 
-Arquitectura modular Repository-Service-Provider implementada
+> Versión actual: **0.5.5** — Pipeline de ingesta funcional con tests base establecidos.
 
 ---
 
@@ -45,87 +39,41 @@ Arquitectura modular Repository-Service-Provider implementada
 ### Calidad
 
 * Pytest
-* Ruff
 
 ### Futuras Integraciones
 
-* OpenAI API
-* Ollama
+* FastAPI
+* OpenAI API / Ollama
 * Embeddings semánticos
-* Automatización de postulaciones
 
 ---
 
 ## Arquitectura
 
 ```text
-src/
-└── job_hunter/
-    ├── config/
-    ├── models/
-    ├── repositories/
-    ├── services/
-    └── main.py
+job-hunter-ia/
+├── src/
+│   └── job_hunter/
+│       ├── config/
+│       ├── models/
+│       ├── providers/
+│       ├── repositories/
+│       ├── services/
+│       └── main.py
+└── tests/
 ```
-
----
-
-## Estado Actual
-
-Versión: **0.5.4**
-
-### Completado
-
-* [x] Estructura inicial del proyecto
-* [x] Entorno virtual
-* [x] Configuración Docker
-* [x] PostgreSQL en contenedor Docker
-
-* [x] Configuración SQLAlchemy
-* [x] Conexión Python → PostgreSQL
-* [x] Modelo Job
-* [x] Persistencia básica
-
-* [x] Repository Layer
-* [x] Service Layer
-* [x] CRUD básico de Jobs
-* [x] Refactor de main.py
-
-* [x] Arquitectura de Providers
-* [x] BaseProvider
-* [x] GetOnBoardProvider integrado con API oficial
-* [x] Modelo RawJob (staging layer)
-* [x] RawJobRepository + RawJobService
-
-* [x] Descarga automática de vacantes por categoría
-* [x] Persistencia de vacantes crudas en PostgreSQL
-* [x] Prevención de duplicados por external_id
-* [x] ProviderRegistry: register(), get_all(), get_by_name()
-
-* [x] FetchService como orquestador del pipeline
-* [x] main.py reducido a punto de entrada puro
-
-### Próximos Pasos
-* [ ] Estructura de tests base
-* [ ] Tests de RawJobService y parse_jobs()
-* [ ] Normalización RawJob → Job
-
----
 
 ## Instalación
 
 ```bash
-git clone <url-del-repositorio>
-
+git clone https://github.com/John-Henriquez/job-hunter-ia.git
 cd job-hunter-ia
-
 python -m venv .venv
-
 .venv\Scripts\activate
-
 pip install -r requirements.txt
-
 docker compose up -d
+cd src
+python -m job_hunter.main
 ```
 
 ---
@@ -139,20 +87,13 @@ docker compose up -d
 * Docker y PostgreSQL
 
 ### v0.3.0 ✅
-* SQLAlchemy
-* Modelo Job
-* Conexión con PostgreSQL
+* SQLAlchemy, Modelo Job, conexión con PostgreSQL
 
 ### v0.4.0 ✅
-* Repository Pattern
-* Service Layer
-* Persistencia desacoplada
+* Repository Pattern, Service Layer, persistencia desacoplada
 
 ### v0.4.1 ✅
-* Arquitectura de Providers
-* BaseProvider
-* GetOnBoardProvider (stub)
-* Limpieza de flujo de pruebas
+* Arquitectura de Providers, BaseProvider, GetOnBoardProvider (stub)
 
 ### v0.5.0✅
 * Integración real con GetOnBoard
@@ -162,28 +103,27 @@ docker compose up -d
 * Persistencia automática con prevención de duplicados
 
 ### v0.5.1 ✅
-* Limpieza de dependencias muertas (curl_cffi)
+* Limpieza de dependencias muertas
 * DB_ECHO configurable via .env
-* Deduplicación delegada completamente al service
-* Correcciones menores en main.py
+* Correcciones en main.py
 
 ### v0.5.2✅
-* BaseProvider con contrato robusto (source_name, source_version, is_active)
-* parse_jobs() como método abstracto obligatorio
-* GetOnBoardProvider actualizado al nuevo contrato
+* BaseProvider con contrato robusto
+* source_name, source_version, is_active
+* parse_jobs() abstracto y tipado
 
 ### v0.5.3✅
 * ProviderRegistry: register(), get_all(), get_by_name()
 * Providers desacoplados de main.py
 
 ### v0.5.4✅
-* FetchService como orquestador del pipeline fetch → parse → save
-* main.py reducido a punto de entrada puro (~10 líneas)
+* FetchService como orquestador del pipeline
+* main.py reducido a punto de entrada puro
 
-### v0.5.5
+### v0.5.5✅
 * Estructura tests/ establecida
-* Tests de RawJobService con mock de repository
-* Tests de parse_jobs() con payload fijo
+* 6 tests pasando (RawJobService + parse_jobs)
+* requirements.txt limpio
 
 ### v0.6.0
 * Normalización RawJob → Job
@@ -199,7 +139,6 @@ docker compose up -d
 ### v0.8.0
 * API REST mínima con FastAPI
 * GET /jobs, GET /jobs/{id}
-* Reemplaza necesidad de cliente visual para observabilidad
 
 ### v0.9.0
 * Sistema de filtros y búsqueda por tecnologías

@@ -11,7 +11,7 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ---
 ## Estado del proyecto
 
-Versión actual: 0.5.2
+Versión actual: 0.5.3
 Backend funcional con persistencia en PostgreSQL
 Integración real con GetOnBoard API 
 Arquitectura modular Repository-Service-Provider implementada
@@ -72,7 +72,7 @@ src/
 
 ## Estado Actual
 
-Versión: **0.5.2**
+Versión: **0.5.3**
 
 ### Completado
 
@@ -96,16 +96,20 @@ Versión: **0.5.2**
 * [x] GetOnBoardProvider integrado con API oficial
 * [x] Modelo RawJob (staging layer)
 * [x] RawJobRepository + RawJobService
+
 * [x] Descarga automática de vacantes por categoría
 * [x] Persistencia de vacantes crudas en PostgreSQL
 * [x] Prevención de duplicados por external_id
+* [x] ProviderRegistry: register(), get_all(), get_by_name()
 
 ### Próximos Pasos
+
 ### Próximos Pasos
-* [ ] ProviderRegistry: register(), get_all(), get_by_name()
 * [ ] FetchService como orquestador del pipeline
+* [ ] main.py reducido a punto de entrada puro
 * [ ] Estructura de tests base
 * [ ] Normalización RawJob → Job
+
 ---
 
 ## Instalación
@@ -168,7 +172,7 @@ docker compose up -d
 * parse_jobs() como método abstracto obligatorio
 * GetOnBoardProvider actualizado al nuevo contrato
 
-### v0.5.3
+### v0.5.3✅
 * ProviderRegistry: register(), get_all(), get_by_name()
 * Providers desacoplados de main.py
 

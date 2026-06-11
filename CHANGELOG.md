@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.5.3] - 2026-06-10
+
+### Added
+- `ProviderRegistry` con métodos `register()`, `get_all()`, `get_by_name()`, `list_registered()`
+- Registro automático omite providers inactivos (`is_active = False`)
+
+### Changed
+- `main.py` refactorizado para usar `ProviderRegistry`
+- El loop principal itera sobre providers registrados, no instancias directas
+- Conteo de guardados y duplicados por provider y resumen total
+
 ## [v0.5.2] - 2026-06-10
 
 ### Changed

@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **0.9.0** — Datos limpios, calidad de normalización completa.
+> Versión actual: **1.0.0** — MVP completo con frontend, API REST y pipeline multi-provider.
 
 ---
 
@@ -26,23 +26,19 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 ## Stack Tecnológico
 
 ### Backend
-
 * Python 3.x
 * PostgreSQL
 * SQLAlchemy
+* FastAPI
 
 ### Infraestructura
-
 * Docker
 * Docker Compose
 
 ### Calidad
-
 * Pytest
 
 ### Futuras Integraciones
-
-* FastAPI
 * OpenAI API / Ollama
 * Embeddings semánticos
 
@@ -52,10 +48,16 @@ Además de ser una herramienta práctica, el proyecto sirve como laboratorio de 
 
 ```text
 job-hunter-ia/
+├── docs/
+│   └── FUTURE.md
 ├── src/
 │   └── job_hunter/
+│       ├── api/
+│       │   ├── routers/
+│       │   └── static/
 │       ├── config/
 │       ├── models/
+│       ├── normalizers/
 │       ├── providers/
 │       ├── repositories/
 │       ├── services/
@@ -63,7 +65,7 @@ job-hunter-ia/
 └── tests/
 ```
 
-## Instalación
+## Instalación y uso
 
 ```bash
 git clone https://github.com/John-Henriquez/job-hunter-ia.git
@@ -73,7 +75,14 @@ python -m venv .venv
 pip install -r requirements.txt
 docker compose up -d
 cd src
-python -m job_hunter.main
+
+python -m job_hunter.api.server
+
+python -m job_hunter.main fetch
+python -m job_hunter.main fetch --provider getonboard
+python -m job_hunter.main fetch --provider arbeitnow
+
+python -m job_hunter.main stats
 ```
 
 ---
@@ -154,7 +163,7 @@ python -m job_hunter.main
 * work_mode normalizado a 3 valores: remote, hybrid, on-site
 * Pipeline de normalización corregido para nuevos fetches
 
-### v1.0.0 — Cierre de portafolio
+### v1.0.0 — Cierre de portafolio ✅
 * Frontend básico
 * Tabla de vacantes paginada
 * Filtros por fuente, categoría, seniority y modalidad

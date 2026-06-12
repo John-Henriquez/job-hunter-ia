@@ -1,5 +1,28 @@
 # Changelog
 
+## [v1.0.0] - 2026-06-11
+
+### Added
+- Frontend completo en HTML/CSS/JS vanilla servido desde FastAPI
+- Tabla paginada de vacantes con 25 por página
+- Filtros por fuente, modalidad, work mode y seniority
+- Búsqueda en tiempo real por título y empresa
+- Vista detalle de cada vacante en modal
+- Botones de refresh por provider y global
+- Polling de estado del fetch con feedback en tiempo real
+- Panel de estadísticas en sidebar
+- Endpoints POST /fetch/ y POST /fetch/{provider}
+- GET /fetch/status para polling del estado
+
+### Changed
+- app.py sirve archivos estáticos y redirige / al frontend
+- version bumped a 1.0.0
+
+### Results
+- Sistema completo funcional: docker compose up → frontend en localhost:8000
+- 2086 vacantes de 2 fuentes consultables con filtros
+- Refresh de datos desde el propio frontend
+
 ## [v0.9.0] - 2026-06-11
 
 ### Fixed

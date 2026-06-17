@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.0.1] - 2026-06-17
+
+### Fixed
+- Raw job deduplication now uses `source` + `external_id` to avoid collisions between providers.
+- Existing unprocessed raw jobs are retried instead of being skipped forever.
+- Raw jobs are marked as processed only after a normalized `Job` is created successfully.
+- `/health` now reads `VERSION` using a stable project path instead of the current working directory.
+- FastAPI app metadata now uses the same version source as `/health`.
+
+### Added
+- Tests for fetch retry/skip behavior around processed raw jobs.
+- Tests for `/health` version consistency.
+
 ## [v1.0.0] - 2026-06-11
 
 ### Added

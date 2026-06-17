@@ -4,6 +4,7 @@ from sqlalchemy import (
     String,
     Boolean,
     DateTime,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
@@ -13,6 +14,9 @@ from job_hunter.config.database import Base
 
 class RawJob(Base):
     __tablename__ = "raw_jobs"
+    __table_args__ = (
+        UniqueConstraint("source", "external_id", name="uq_raw_jobs_source_external_id"),
+    )
 
     id = Column(Integer, primary_key=True)
 

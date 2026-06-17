@@ -4,7 +4,7 @@ from job_hunter.services.raw_job_service import RawJobService
 
 def test_save_raw_job_nuevo():
     repository = MagicMock()
-    repository.get_by_external_id.return_value = None
+    repository.get_by_source_external_id.return_value = None
 
     service = RawJobService(repository)
     service.save_raw_job(
@@ -13,12 +13,13 @@ def test_save_raw_job_nuevo():
         raw_payload={"title": "Dev"},
     )
 
+    repository.get_by_source_external_id.assert_called_once_with("getonboard", "123")
     repository.create.assert_called_once()
 
 
 def test_save_raw_job_duplicado():
     repository = MagicMock()
-    repository.get_by_external_id.return_value = MagicMock()
+    repository.get_by_source_external_id.return_value = MagicMock()
 
     service = RawJobService(repository)
     result = service.save_raw_job(

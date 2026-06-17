@@ -44,8 +44,9 @@ class RenormalizeService:
 
         for job in jobs:
             try:
-                raw = self.raw_repository.get_by_external_id(
-                    self._get_external_id(job)
+                raw = self.raw_repository.get_by_source_external_id(
+                    job.source,
+                    self._get_external_id(job),
                 )
                 if not raw:
                     failed += 1

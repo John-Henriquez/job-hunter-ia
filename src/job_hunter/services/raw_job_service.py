@@ -13,7 +13,8 @@ class RawJobService:
         raw_payload,
     ):
 
-        existing = self.repository.get_by_external_id(
+        existing = self.repository.get_by_source_external_id(
+            source,
             external_id
         )
 

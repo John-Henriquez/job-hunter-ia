@@ -12,9 +12,10 @@ class RawJobRepository:
         self.db.refresh(raw_job)
         return raw_job
 
-    def get_by_external_id(self, external_id):
+    def get_by_source_external_id(self, source, external_id):
         return (
             self.db.query(RawJob)
+            .filter(RawJob.source == source)
             .filter(RawJob.external_id == external_id)
             .first()
         )
@@ -22,6 +23,12 @@ class RawJobRepository:
     def get_unprocessed(self):
         return (
             self.db.query(RawJob)
-            .filter(RawJob.processed == False)
+            .filter(RawJob.processed.is_(False))
             .all()
         )
+
+    def mark_processed(self, raw_job):
+        raw_job.processed = True
+        self.db.commit()
+        self.db.refresh(raw_job)
+        return raw_job

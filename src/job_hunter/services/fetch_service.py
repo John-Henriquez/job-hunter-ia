@@ -33,21 +33,23 @@ class FetchService:
             saved = 0
 
             for job in parsed_jobs:
-                existing = self.raw_repository.get_by_external_id(
+                raw_job = self.raw_repository.get_by_source_external_id(
+                    job["source"],
                     job["external_id"]
                 )
-                if existing:
+                if raw_job and raw_job.processed:
                     total_skipped += 1
                     continue
 
-                raw_job = self.raw_service.save_raw_job(
-                    source=job["source"],
-                    external_id=job["external_id"],
-                    raw_payload=job["raw_payload"],
-                )
-                saved += 1
+                if not raw_job:
+                    raw_job = self.raw_service.save_raw_job(
+                        source=job["source"],
+                        external_id=job["external_id"],
+                        raw_payload=job["raw_payload"],
+                    )
+                    saved += 1
 
-                normalized = normalizer.normalize(job["raw_payload"])
+                normalized = normalizer.normalize(raw_job.raw_payload)
                 if normalized:
                     self.job_service.create_job(
                         title=normalized.title,
@@ -63,6 +65,7 @@ class FetchService:
                         url=normalized.url,
                         published_at=normalized.published_at,
                     )
+                    self.raw_repository.mark_processed(raw_job)
                     total_normalized += 1
                 else:
                     total_failed += 1

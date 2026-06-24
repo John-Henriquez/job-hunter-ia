@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from job_hunter.models.job import Job
 
+APPLICATION_STATUSES = {"saved", "applied", "interviewing", "discarded"}
+
 class JobRepository:
     def __init__(self, db: Session):
         self.db = db
@@ -20,6 +22,19 @@ class JobRepository:
             .filter(Job.id == job_id)
             .first()
         )
+
+    def update_application_status(self, job_id: int, status: str) -> Job | None:
+        if status not in APPLICATION_STATUSES:
+            raise ValueError(f"Invalid application status: {status}")
+
+        job = self.get_by_id(job_id)
+        if not job:
+            return None
+
+        job.application_status = status
+        self.db.commit()
+        self.db.refresh(job)
+        return job
 
     def delete_job(self, job_id: int) -> bool:
         job = self.get_by_id(job_id)

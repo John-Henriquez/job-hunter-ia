@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.1.0] - 2026-06-24
+
+### Added
+- Alembic configurado para migraciones de esquema futuras
+- env.py de Alembic integrado con DATABASE_URL del proyecto y target_metadata de los modelos
+- Migración inicial (baseline) registrada con `alembic stamp head`
+
+### Fixed
+- `load_dotenv()` en database.py ahora usa path explícito a la raíz del proyecto
+- Conflicto de puerto 5432 resuelto deteniendo servicios nativos de PostgreSQL en Windows
+
 ## [v1.0.1] - 2026-06-17
 
 ### Fixed

@@ -45,5 +45,8 @@ class JobService:
     def get_job(self, job_id: int) -> Job | None:
         return self.repository.get_by_id(job_id)
 
+    def update_application_status(self, job_id: int, status: str) -> Job | None:
+        return self.repository.update_application_status(job_id, status)
+
     def delete_job(self, job_id: int) -> bool:
         return self.repository.delete_job(job_id)

@@ -27,4 +27,6 @@ class Job(Base):
 
     published_at = Column(DateTime, nullable=True)
 
+    application_status = Column(String(50), nullable=False, default="saved")
+
     created_at = Column(DateTime, default=datetime.utcnow)

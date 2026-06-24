@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **1.0.0** — MVP completo con frontend, API REST y pipeline multi-provider.
+> Versión actual: **1.1.0** — Seguimiento personal de postulaciones, calidad de datos y Alembic.
 
 ---
 
@@ -170,6 +170,13 @@ python -m job_hunter.main stats
 * Vista detalle de cada vacante
 * docker compose up → sistema funcional completo sin configuración manual
 * README profesional con capturas y ejemplos de uso
+
+### v1.1.0 ✅
+* application_status: saved, applied, interviewing, discarded
+* Dedupe corregido a source + external_id
+* Reintento de raw_jobs no procesados
+* Alembic configurado para migraciones futuras
+* Frontend con mitigación XSS y gestión de estado por vacante
 
 ---
 

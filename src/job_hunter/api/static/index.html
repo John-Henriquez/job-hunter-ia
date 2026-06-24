@@ -341,6 +341,10 @@
     .badge-onsite   { background: rgba(108,99,255,0.1); color: var(--onsite); border: 1px solid rgba(108,99,255,0.2); }
     .badge-source   { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); font-family: var(--mono); font-size: 10px; }
     .badge-seniority { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
+    .badge-status-saved { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+    .badge-status-applied { background: rgba(0,212,170,0.1); color: var(--accent2); border: 1px solid rgba(0,212,170,0.2); }
+    .badge-status-interviewing { background: rgba(245,166,35,0.1); color: var(--hybrid); border: 1px solid rgba(245,166,35,0.2); }
+    .badge-status-discarded { background: rgba(255,92,106,0.1); color: var(--danger); border: 1px solid rgba(255,92,106,0.2); }
 
     /* PAGINATION */
     .pagination {
@@ -477,6 +481,7 @@
       font-size: 13px;
       line-height: 1.7;
       color: var(--text);
+      white-space: pre-wrap;
     }
 
     .modal-description ul { padding-left: 20px; }
@@ -492,6 +497,28 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
+    .status-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .status-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.15s;
+    }
+
+    .status-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .status-btn.active { border-color: var(--accent2); color: var(--accent2); }
+    .status-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .meta-item .meta-label {
       font-size: 10px;
@@ -589,6 +616,13 @@
           <option value="Senior">Senior</option>
           <option value="Expert">Expert</option>
         </select>
+        <select id="filterApplicationStatus" onchange="applyFilters()">
+          <option value="">Cualquier estado</option>
+          <option value="saved">Guardada</option>
+          <option value="applied">Postulada</option>
+          <option value="interviewing">En proceso</option>
+          <option value="discarded">Descartada</option>
+        </select>
         <button class="btn-reset" onclick="resetFilters()">Limpiar filtros</button>
       </div>
     </div>
@@ -630,11 +664,12 @@
             <th>Seniority</th>
             <th>Categoría</th>
             <th>Fuente</th>
+            <th>Estado</th>
             <th>Publicado</th>
           </tr>
         </thead>
         <tbody id="jobsBody">
-          <tr><td colspan="6"><div class="loading"><div class="spinner"></div> Cargando vacantes...</div></td></tr>
+          <tr><td colspan="7"><div class="loading"><div class="spinner"></div> Cargando vacantes...</div></td></tr>
         </tbody>
       </table>
     </div>
@@ -659,6 +694,37 @@
   const PER_PAGE = 25;
   let fetchPolling = null;
 
+  function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[char]));
+  }
+
+  function safeURL(value) {
+    try {
+      const url = new URL(value, window.location.origin);
+      return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function mutedDash() {
+    return '<span style="color:var(--muted)">—</span>';
+  }
+
+  async function apiFetch(url, options = {}) {
+    const response = await fetch(url, options);
+    if(!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return response;
+  }
+
   // INIT
   async function init() {
     await Promise.all([loadStats(), loadJobs()]);
@@ -667,7 +733,7 @@
   // LOAD STATS
   async function loadStats() {
     try {
-      const r = await fetch(`${API}/stats/`);
+      const r = await apiFetch(`${API}/stats/`);
       const data = await r.json();
       document.getElementById('statTotal').textContent = data.total.toLocaleString();
       document.getElementById('statSources').textContent = Object.keys(data.by_source).length;
@@ -675,22 +741,23 @@
         ? (data.by_source['getonboard'] || 0) + (data.by_source['arbeitnow'] || 0)
         : data.total;
       document.getElementById('statCategories').textContent = Object.keys(data.by_category).length;
-      document.getElementById('headerTotal').innerHTML = `<strong>${data.total.toLocaleString()}</strong> vacantes`;
+      document.getElementById('headerTotal').textContent = `${Number(data.total || 0).toLocaleString()} vacantes`;
     } catch(e) {
       console.error('Error cargando stats', e);
+      document.getElementById('headerTotal').textContent = 'API no disponible';
     }
   }
 
   // LOAD ALL JOBS
   async function loadJobs() {
     document.getElementById('jobsBody').innerHTML = 
-      '<tr><td colspan="6"><div class="loading"><div class="spinner"></div> Cargando vacantes...</div></td></tr>';
+      '<tr><td colspan="7"><div class="loading"><div class="spinner"></div> Cargando vacantes...</div></td></tr>';
     
     try {
       let page = 1;
       let all = [];
       while(true) {
-        const r = await fetch(`${API}/jobs/?page=${page}&per_page=100`);
+        const r = await apiFetch(`${API}/jobs/?page=${page}&per_page=100`);
         const data = await r.json();
         all = all.concat(data.data);
         if(all.length >= data.total || data.data.length === 0) break;
@@ -700,7 +767,7 @@
       applyFilters();
     } catch(e) {
       document.getElementById('jobsBody').innerHTML = 
-        '<tr><td colspan="6"><div class="empty"><div class="empty-icon">⚠</div>Error al cargar vacantes</div></td></tr>';
+        '<tr><td colspan="7"><div class="empty"><div class="empty-icon">⚠</div>Error al cargar vacantes</div></td></tr>';
     }
   }
 
@@ -711,6 +778,7 @@
     const modality = document.getElementById('filterModality').value;
     const workMode = document.getElementById('filterWorkMode').value;
     const seniority = document.getElementById('filterSeniority').value;
+    const applicationStatus = document.getElementById('filterApplicationStatus').value;
 
     filteredJobs = allJobs.filter(j => {
       if(search && !j.title?.toLowerCase().includes(search) && !j.company?.toLowerCase().includes(search)) return false;
@@ -718,6 +786,7 @@
       if(modality && j.modality !== modality) return false;
       if(workMode && j.work_mode !== workMode) return false;
       if(seniority && j.seniority !== seniority) return false;
+      if(applicationStatus && j.application_status !== applicationStatus) return false;
       return true;
     });
 
@@ -732,6 +801,7 @@
     document.getElementById('filterModality').value = '';
     document.getElementById('filterWorkMode').value = '';
     document.getElementById('filterSeniority').value = '';
+    document.getElementById('filterApplicationStatus').value = '';
     applyFilters();
   }
 
@@ -745,23 +815,29 @@
 
     if(page.length === 0) {
       document.getElementById('jobsBody').innerHTML = 
-        '<tr><td colspan="6"><div class="empty"><div class="empty-icon">🔍</div>Sin resultados para estos filtros</div></td></tr>';
+        '<tr><td colspan="7"><div class="empty"><div class="empty-icon">🔍</div>Sin resultados para estos filtros</div></td></tr>';
       return;
     }
 
-    document.getElementById('jobsBody').innerHTML = page.map(j => `
-      <tr onclick="openJob(${j.id})">
+    document.getElementById('jobsBody').innerHTML = page.map(j => {
+      const jobId = Number(j.id);
+      if(!Number.isFinite(jobId)) return '';
+
+      return `
+      <tr onclick="openJob(${jobId})">
         <td>
-          <div class="job-title">${j.title || '—'}</div>
-          <div class="job-company">${j.company || '—'}</div>
+          <div class="job-title">${escapeHTML(j.title || '—')}</div>
+          <div class="job-company">${escapeHTML(j.company || '—')}</div>
         </td>
         <td>${workModeBadge(j.work_mode)}</td>
-        <td>${j.seniority ? `<span class="badge badge-seniority">${j.seniority}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
-        <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-size:12px">${j.category || '—'}</td>
-        <td><span class="badge badge-source">${j.source}</span></td>
+        <td>${j.seniority ? `<span class="badge badge-seniority">${escapeHTML(j.seniority)}</span>` : mutedDash()}</td>
+        <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-size:12px">${escapeHTML(j.category || '—')}</td>
+        <td><span class="badge badge-source">${escapeHTML(j.source || '—')}</span></td>
+        <td>${statusBadge(j.application_status)}</td>
         <td style="color:var(--muted);font-size:12px;font-family:var(--mono)">${formatDate(j.published_at)}</td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   function workModeBadge(mode) {
@@ -770,7 +846,32 @@
       'hybrid': '<span class="badge badge-hybrid">Híbrido</span>',
       'on-site': '<span class="badge badge-onsite">Presencial</span>',
     };
-    return map[mode] || `<span style="color:var(--muted)">—</span>`;
+    return map[mode] || mutedDash();
+  }
+
+  function statusLabel(status) {
+    return {
+      saved: 'Guardada',
+      applied: 'Postulada',
+      interviewing: 'En proceso',
+      discarded: 'Descartada',
+    }[status] || 'Guardada';
+  }
+
+  function statusBadge(status) {
+    const normalized = ['saved', 'applied', 'interviewing', 'discarded'].includes(status) ? status : 'saved';
+    return `<span class="badge badge-status-${normalized}">${statusLabel(normalized)}</span>`;
+  }
+
+  function statusActions(jobId, currentStatus) {
+    const statuses = ['saved', 'applied', 'interviewing', 'discarded'];
+    return statuses.map(status => `
+      <button
+        type="button"
+        class="status-btn ${status === currentStatus ? 'active' : ''}"
+        onclick="updateApplicationStatus(${jobId}, '${status}')"
+      >${statusLabel(status)}</button>
+    `).join('');
   }
 
   function formatDate(iso) {
@@ -822,25 +923,31 @@
     document.body.style.overflow = 'hidden';
 
     try {
-      const r = await fetch(`${API}/jobs/${id}`);
+      const r = await apiFetch(`${API}/jobs/${id}`);
       const j = await r.json();
+      const applyURL = safeURL(j.url);
+      const jobId = Number(j.id);
+      const currentStatus = ['saved', 'applied', 'interviewing', 'discarded'].includes(j.application_status)
+        ? j.application_status
+        : 'saved';
 
       document.getElementById('modalBody').innerHTML = `
-        <div class="modal-title">${j.title || '—'}</div>
-        <div class="modal-company">${j.company || 'Empresa no especificada'} · ${j.location || '—'}</div>
+        <div class="modal-title">${escapeHTML(j.title || '—')}</div>
+        <div class="modal-company">${escapeHTML(j.company || 'Empresa no especificada')} · ${escapeHTML(j.location || '—')}</div>
         <div class="modal-badges">
           ${workModeBadge(j.work_mode)}
-          ${j.seniority ? `<span class="badge badge-seniority">${j.seniority}</span>` : ''}
-          ${j.modality ? `<span class="badge badge-source">${j.modality}</span>` : ''}
-          <span class="badge badge-source">${j.source}</span>
-          ${j.category ? `<span class="badge badge-source">${j.category}</span>` : ''}
+          ${j.seniority ? `<span class="badge badge-seniority">${escapeHTML(j.seniority)}</span>` : ''}
+          ${j.modality ? `<span class="badge badge-source">${escapeHTML(j.modality)}</span>` : ''}
+          <span class="badge badge-source">${escapeHTML(j.source || '—')}</span>
+          ${j.category ? `<span class="badge badge-source">${escapeHTML(j.category)}</span>` : ''}
+          ${statusBadge(currentStatus)}
         </div>
 
         <div class="modal-section">
           <div class="modal-meta">
             <div class="meta-item">
               <div class="meta-label">Salario</div>
-              <div class="meta-value">${j.salary ? `$${j.salary}` : 'No especificado'}</div>
+              <div class="meta-value">${escapeHTML(j.salary ? `$${j.salary}` : 'No especificado')}</div>
             </div>
             <div class="meta-item">
               <div class="meta-label">Publicado</div>
@@ -849,17 +956,44 @@
           </div>
         </div>
 
-        ${j.description ? `
+        ${Number.isFinite(jobId) ? `
           <div class="modal-section">
-            <h4>Descripción</h4>
-            <div class="modal-description">${j.description}</div>
+            <h4>Estado</h4>
+            <div class="status-actions">${statusActions(jobId, currentStatus)}</div>
           </div>
         ` : ''}
 
-        ${j.url ? `<a href="${j.url}" target="_blank" class="btn-apply">Ver oferta completa →</a>` : ''}
+        ${j.description ? `
+          <div class="modal-section">
+            <h4>Descripción</h4>
+            <div class="modal-description">${escapeHTML(j.description)}</div>
+          </div>
+        ` : ''}
+
+        ${applyURL ? `<a href="${escapeHTML(applyURL)}" target="_blank" rel="noopener noreferrer" class="btn-apply">Ver oferta completa →</a>` : ''}
       `;
     } catch(e) {
       document.getElementById('modalBody').innerHTML = '<div class="empty">Error al cargar el detalle</div>';
+    }
+  }
+
+  async function updateApplicationStatus(jobId, status) {
+    const buttons = document.querySelectorAll('.status-btn');
+    buttons.forEach(btn => btn.disabled = true);
+
+    try {
+      const r = await apiFetch(`${API}/jobs/${jobId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+
+      const updated = await r.json();
+      allJobs = allJobs.map(job => job.id === updated.id ? { ...job, application_status: updated.application_status } : job);
+      applyFilters();
+      await openJob(updated.id);
+    } catch(e) {
+      buttons.forEach(btn => btn.disabled = false);
     }
   }
 
@@ -884,7 +1018,7 @@
 
     try {
       const url = provider === 'all' ? `${API}/fetch/` : `${API}/fetch/${provider}`;
-      await fetch(url, { method: 'POST' });
+      await apiFetch(url, { method: 'POST' });
       statusEl.textContent = 'Descargando vacantes...';
       pollFetchStatus();
     } catch(e) {
@@ -898,7 +1032,7 @@
     if(fetchPolling) clearInterval(fetchPolling);
     fetchPolling = setInterval(async () => {
       try {
-        const r = await fetch(`${API}/fetch/status`);
+        const r = await apiFetch(`${API}/fetch/status`);
         const data = await r.json();
         const statusEl = document.getElementById('fetchStatus');
         const btns = document.querySelectorAll('.btn-refresh');

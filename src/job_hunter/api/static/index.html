@@ -34,7 +34,6 @@
       line-height: 1.6;
     }
 
-    /* HEADER */
     header {
       border-bottom: 1px solid var(--border);
       padding: 0 32px;
@@ -76,14 +75,12 @@
 
     .total-badge strong { color: var(--accent2); }
 
-    /* LAYOUT */
     .layout {
       display: grid;
       grid-template-columns: 260px 1fr;
       min-height: calc(100vh - 60px);
     }
 
-    /* SIDEBAR */
     aside {
       border-right: 1px solid var(--border);
       padding: 24px 20px;
@@ -144,7 +141,6 @@
 
     .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* REFRESH BUTTONS */
     .refresh-buttons {
       display: flex;
       flex-direction: column;
@@ -191,8 +187,8 @@
 
     .fetch-status.running { color: var(--hybrid); }
     .fetch-status.done { color: var(--accent2); }
+    .fetch-status.error { color: var(--danger); }
 
-    /* STATS MINI */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -222,7 +218,6 @@
       letter-spacing: 0.8px;
     }
 
-    /* MAIN */
     main {
       padding: 24px 28px;
       display: flex;
@@ -230,7 +225,6 @@
       gap: 16px;
     }
 
-    /* SEARCH */
     .search-bar {
       position: relative;
     }
@@ -259,7 +253,6 @@
       font-size: 14px;
     }
 
-    /* RESULTS INFO */
     .results-info {
       display: flex;
       align-items: center;
@@ -268,7 +261,18 @@
       color: var(--muted);
     }
 
-    /* TABLE */
+    .banner-error {
+      background: rgba(255,92,106,0.08);
+      border: 1px solid rgba(255,92,106,0.25);
+      color: var(--danger);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      display: none;
+    }
+  
+    .banner-error.show { display: block; }
+
     .table-wrap {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -325,7 +329,6 @@
       margin-top: 2px;
     }
 
-    /* BADGES */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -346,7 +349,6 @@
     .badge-status-interviewing { background: rgba(245,166,35,0.1); color: var(--hybrid); border: 1px solid rgba(245,166,35,0.2); }
     .badge-status-discarded { background: rgba(255,92,106,0.1); color: var(--danger); border: 1px solid rgba(255,92,106,0.2); }
 
-    /* PAGINATION */
     .pagination {
       display: flex;
       align-items: center;
@@ -376,7 +378,6 @@
       font-family: var(--mono);
     }
 
-    /* LOADING */
     .loading {
       display: flex;
       align-items: center;
@@ -397,7 +398,6 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -552,7 +552,6 @@
 
     .btn-apply:hover { opacity: 0.85; }
 
-    /* EMPTY STATE */
     .empty {
       text-align: center;
       padding: 60px;
@@ -561,7 +560,6 @@
 
     .empty-icon { font-size: 40px; margin-bottom: 12px; }
 
-    /* SCROLLBAR */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -648,8 +646,10 @@
   <main>
     <div class="search-bar">
       <span class="search-icon">⌕</span>
-      <input type="text" id="searchInput" placeholder="Buscar por título o empresa..." oninput="applyFilters()" />
+      <input type="text" id="searchInput" placeholder="Buscar por título o empresa..." oninput="onSearchInput()" />
     </div>
+
+    <div class="banner-error" id="bannerError"></div>
 
     <div class="results-info">
       <span id="resultsInfo">Cargando...</span>
@@ -678,7 +678,6 @@
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modalContent">
     <button class="modal-close" onclick="closeModalDirect()">✕</button>
@@ -688,11 +687,12 @@
 
 <script>
   const API = '';
-  let allJobs = [];
-  let filteredJobs = [];
   let currentPage = 1;
   const PER_PAGE = 25;
+  let totalJobs = 0;
   let fetchPolling = null;
+  let searchDebounce = null;
+  
 
   function escapeHTML(value) {
     return String(value ?? '').replace(/[&<>"']/g, char => ({
@@ -717,20 +717,40 @@
     return '<span style="color:var(--muted)">—</span>';
   }
 
+  function showError(message) {
+    const el = document.getElementById('bannerError');
+    el.textContent = message;
+    el.classList.add('show');
+  }
+
+  function clearError() {
+    const el = document.getElementById('bannerError');
+    el.textContent = '';
+    el.classList.remove('show');
+  }
+
   async function apiFetch(url, options = {}) {
-    const response = await fetch(url, options);
-    if(!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    let response;
+    try {
+      response = await fetch(url, options);
+    } catch (e) {
+      throw new Error('No se pudo conectar con el servidor');
+    }
+    if (!response.ok) {
+      let detail = `HTTP ${response.status}`;
+      try {
+        const body = await response.json();
+        if (body?.detail) detail = body.detail;
+      } catch (e) { /* respuesta sin JSON, se usa el detail default */ }
+      throw new Error(detail);
     }
     return response;
   }
 
-  // INIT
   async function init() {
     await Promise.all([loadStats(), loadJobs()]);
   }
 
-  // LOAD STATS
   async function loadStats() {
     try {
       const r = await apiFetch(`${API}/stats/`);
@@ -743,56 +763,60 @@
       document.getElementById('statCategories').textContent = Object.keys(data.by_category).length;
       document.getElementById('headerTotal').textContent = `${Number(data.total || 0).toLocaleString()} vacantes`;
     } catch(e) {
-      console.error('Error cargando stats', e);
       document.getElementById('headerTotal').textContent = 'API no disponible';
+      showError(`No se pudieron cargar las estadísticas: ${e.message}`);
     }
   }
 
-  // LOAD ALL JOBS
-  async function loadJobs() {
-    document.getElementById('jobsBody').innerHTML = 
-      '<tr><td colspan="7"><div class="loading"><div class="spinner"></div> Cargando vacantes...</div></td></tr>';
-    
-    try {
-      let page = 1;
-      let all = [];
-      while(true) {
-        const r = await apiFetch(`${API}/jobs/?page=${page}&per_page=100`);
-        const data = await r.json();
-        all = all.concat(data.data);
-        if(all.length >= data.total || data.data.length === 0) break;
-        page++;
-      }
-      allJobs = all;
-      applyFilters();
-    } catch(e) {
-      document.getElementById('jobsBody').innerHTML = 
-        '<tr><td colspan="7"><div class="empty"><div class="empty-icon">⚠</div>Error al cargar vacantes</div></td></tr>';
-    }
-  }
-
-  // FILTERS
-  function applyFilters() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
+  function buildQueryParams() {
+    const params = new URLSearchParams();
+    const search = document.getElementById('searchInput').value.trim();
     const source = document.getElementById('filterSource').value;
     const modality = document.getElementById('filterModality').value;
     const workMode = document.getElementById('filterWorkMode').value;
     const seniority = document.getElementById('filterSeniority').value;
     const applicationStatus = document.getElementById('filterApplicationStatus').value;
+ 
+    if (search) params.set('search', search);
+    if (source) params.set('source', source);
+    if (modality) params.set('modality', modality);
+    if (workMode) params.set('work_mode', workMode);
+    if (seniority) params.set('seniority', seniority);
+    if (applicationStatus) params.set('application_status', applicationStatus);
+    params.set('page', currentPage);
+    params.set('per_page', PER_PAGE);
+ 
+    return params;
+  }
 
-    filteredJobs = allJobs.filter(j => {
-      if(search && !j.title?.toLowerCase().includes(search) && !j.company?.toLowerCase().includes(search)) return false;
-      if(source && j.source !== source) return false;
-      if(modality && j.modality !== modality) return false;
-      if(workMode && j.work_mode !== workMode) return false;
-      if(seniority && j.seniority !== seniority) return false;
-      if(applicationStatus && j.application_status !== applicationStatus) return false;
-      return true;
-    });
+  async function loadJobs() {
+    document.getElementById('jobsBody').innerHTML = 
+      '<tr><td colspan="7"><div class="loading"><div class="spinner"></div> Cargando vacantes...</div></td></tr>';
+    clearError();
 
+    try {
+      const params = buildQueryParams();
+      const r = await apiFetch(`${API}/jobs/?${params.toString()}`);
+      const data = await r.json();
+ 
+      totalJobs = data.total;
+      renderTable(data.data);
+      renderPagination();
+    } catch(e) {
+      document.getElementById('jobsBody').innerHTML = 
+        '<tr><td colspan="7"><div class="empty"><div class="empty-icon">⚠</div>Error al cargar vacantes</div></td></tr>';
+        showError(`No se pudieron cargar las vacantes: ${e.message}`);
+    }
+  }
+
+  function applyFilters() {
     currentPage = 1;
-    renderTable();
-    renderPagination();
+    loadJobs();
+  }
+
+  function onSearchInput() {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(applyFilters, 350);
   }
 
   function resetFilters() {
@@ -805,24 +829,19 @@
     applyFilters();
   }
 
-  // RENDER TABLE
-  function renderTable() {
-    const start = (currentPage - 1) * PER_PAGE;
-    const page = filteredJobs.slice(start, start + PER_PAGE);
-
-    document.getElementById('resultsInfo').textContent = 
-      `${filteredJobs.length.toLocaleString()} vacantes ${filteredJobs.length !== allJobs.length ? `(de ${allJobs.length.toLocaleString()})` : ''}`;
-
-    if(page.length === 0) {
-      document.getElementById('jobsBody').innerHTML = 
+  function renderTable(jobs) {
+    document.getElementById('resultsInfo').textContent = `${totalJobs.toLocaleString()} vacantes`;
+ 
+    if (jobs.length === 0) {
+      document.getElementById('jobsBody').innerHTML =
         '<tr><td colspan="7"><div class="empty"><div class="empty-icon">🔍</div>Sin resultados para estos filtros</div></td></tr>';
       return;
     }
-
-    document.getElementById('jobsBody').innerHTML = page.map(j => {
+ 
+    document.getElementById('jobsBody').innerHTML = jobs.map(j => {
       const jobId = Number(j.id);
-      if(!Number.isFinite(jobId)) return '';
-
+      if (!Number.isFinite(jobId)) return '';
+ 
       return `
       <tr onclick="openJob(${jobId})">
         <td>
@@ -880,9 +899,8 @@
     return d.toLocaleDateString('es-CL', { day:'2-digit', month:'short', year:'numeric' });
   }
 
-  // PAGINATION
   function renderPagination() {
-    const total = Math.ceil(filteredJobs.length / PER_PAGE);
+    const total = Math.ceil(totalJobs / PER_PAGE);
     if(total <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
 
     let pages = '';
@@ -908,15 +926,13 @@
   }
 
   function goPage(p) {
-    const total = Math.ceil(filteredJobs.length / PER_PAGE);
+    const total = Math.ceil(totalJobs / PER_PAGE);
     if(p < 1 || p > total) return;
     currentPage = p;
-    renderTable();
-    renderPagination();
+    loadJobs();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // JOB DETAIL
   async function openJob(id) {
     document.getElementById('modalBody').innerHTML = '<div class="loading"><div class="spinner"></div> Cargando...</div>';
     document.getElementById('modalOverlay').classList.add('open');
@@ -989,11 +1005,11 @@
       });
 
       const updated = await r.json();
-      allJobs = allJobs.map(job => job.id === updated.id ? { ...job, application_status: updated.application_status } : job);
-      applyFilters();
+      await loadJobs();
       await openJob(updated.id);
     } catch(e) {
       buttons.forEach(btn => btn.disabled = false);
+      showError(`No se pudo actualizar el estado: ${e.message}`);
     }
   }
 
@@ -1008,7 +1024,6 @@
 
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModalDirect(); });
 
-  // FETCH TRIGGER
   async function triggerFetch(provider) {
     const btns = document.querySelectorAll('.btn-refresh');
     btns.forEach(b => b.disabled = true);
@@ -1051,6 +1066,10 @@
         }
       } catch(e) {
         clearInterval(fetchPolling);
+        const statusEl = document.getElementById('fetchStatus');
+        statusEl.className = 'fetch-status error';
+        statusEl.textContent = `Error consultando estado: ${e.message}`;
+        document.querySelectorAll('.btn-refresh').forEach(b => b.disabled = false);
       }
     }, 2000);
   }

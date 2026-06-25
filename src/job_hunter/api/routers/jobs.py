@@ -37,35 +37,31 @@ def list_jobs(
     category: str = Query(None),
     seniority: str = Query(None),
     modality: str = Query(None),
+    work_mode: str = Query(None),
     application_status: str = Query(None),
+    search: str = Query(None),
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
     repository = JobRepository(db)
-    jobs = repository.get_all()
-
-    if source:
-        jobs = [j for j in jobs if j.source == source]
-    if category:
-        jobs = [j for j in jobs if j.category == category]
-    if seniority:
-        jobs = [j for j in jobs if j.seniority == seniority]
-    if modality:
-        jobs = [j for j in jobs if j.modality == modality]
-    if application_status:
-        jobs = [j for j in jobs if j.application_status == application_status]
-
-    total = len(jobs)
-    start = (page - 1) * per_page
-    end = start + per_page
-    paginated = jobs[start:end]
+    jobs, total = repository.search(
+        source=source,
+        category=category,
+        seniority=seniority,
+        modality=modality,
+        work_mode=work_mode,
+        application_status=application_status,
+        search=search,
+        page=page,
+        per_page=per_page,
+    )
 
     return {
         "total": total,
         "page": page,
         "per_page": per_page,
-        "data": [serialize_job(j) for j in paginated],
+        "data": [serialize_job(j) for j in jobs],
     }
 
 

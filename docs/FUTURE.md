@@ -13,10 +13,10 @@ capas: primero confiabilidad y flujo personal, luego analitica, IA y producto.
 - [x] Frontend: mitigacion XSS en datos externos y links seguros.
 
 ### Deuda Tecnica Antes de Escalar
-- [ ] Migraciones con Alembic para cambios de esquema. Nota: `application_status`
+- [x] Migraciones con Alembic para cambios de esquema. Nota: `application_status`
       requiere migracion o `ALTER TABLE` en bases existentes.
-- [ ] Filtros, busqueda y paginacion server-side en `/jobs/`.
-- [ ] Manejo consistente de errores HTTP en el frontend.
+- [x] Filtros, busqueda y paginacion server-side en `/jobs/`.
+- [x] Manejo consistente de errores HTTP en el frontend.
 - [ ] Responsive real para mobile/tablet.
 - [ ] Facets dinamicos para filtros.
 

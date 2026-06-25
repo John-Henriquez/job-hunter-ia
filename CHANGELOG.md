@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.2.0] - 2026-06-24
+
+### Added
+- `JobRepository.search()`: filtros y paginación ejecutados en SQL (ilike, offset, limit)
+- Parámetro `search` y `work_mode` en GET /jobs/ para búsqueda y filtro adicional
+- Banner de error visible en frontend para fallos de red o HTTP
+- Debounce de 350ms en búsqueda de texto del frontend
+
+### Changed
+- Frontend ya no carga todos los jobs en memoria — cada filtro/página dispara una request
+- apiFetch() extrae el campo `detail` de errores JSON de FastAPI
+- updateApplicationStatus() recarga desde el servidor en vez de mutar estado local
+
+### Results
+- Paginación y filtros escalan más allá de los ~2000 registros actuales
+- Errores de conexión o HTTP visibles para el usuario en vez de fallar en silencio
+
 ## [v1.1.0] - 2026-06-24
 
 ### Added

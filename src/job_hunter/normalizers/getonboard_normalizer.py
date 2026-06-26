@@ -4,6 +4,15 @@ from job_hunter.models.job import Job
 from job_hunter.normalizers.base_normalizer import BaseNormalizer
 
 
+WORK_MODE_MAP = {
+    "fully_remote": "remote",
+    "remote_local": "remote",
+    "no_remote": "on-site",
+    "hybrid": "hybrid",
+    "remote": "remote",
+    "on-site": "on-site",
+}
+
 class GetOnBoardNormalizer(BaseNormalizer):
 
     BASE_URL = "https://www.getonbrd.com/api/v0"
@@ -55,6 +64,11 @@ class GetOnBoardNormalizer(BaseNormalizer):
             return name
         except requests.RequestException:
             return None
+        
+    def _parse_work_mode(self, raw_value: str) -> str | None:
+        if not raw_value:
+            return None
+        return WORK_MODE_MAP.get(raw_value, raw_value)
 
     def _parse_salary(self, min_salary, max_salary) -> str | None:
         if min_salary and max_salary:
@@ -107,7 +121,7 @@ class GetOnBoardNormalizer(BaseNormalizer):
                 title=title,
                 company=company_name,
                 location=location,
-                work_mode=attrs.get("remote_modality"),
+                work_mode=self._parse_work_mode(attrs.get("remote_modality")),
                 salary=self._parse_salary(
                     attrs.get("min_salary"),
                     attrs.get("max_salary"),

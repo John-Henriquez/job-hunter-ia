@@ -8,7 +8,7 @@ Recopila ofertas laborales desde múltiples fuentes, las almacena en una base de
 
 Además de ser una herramienta práctica, el proyecto sirve como laboratorio de aprendizaje y portafolio profesional en áreas como automatización, desarrollo backend, bases de datos, scraping, análisis de datos e inteligencia artificial.
 
-> Versión actual: **1.1.0** — Seguimiento personal de postulaciones, calidad de datos y Alembic.
+> Versión actual: **1.1.2** — Seguimiento personal de postulaciones, calidad de datos y Alembic.
 
 ---
 
@@ -172,11 +172,16 @@ python -m job_hunter.main stats
 * README profesional con capturas y ejemplos de uso
 
 ### v1.1.0 ✅
-* application_status: saved, applied, interviewing, discarded
-* Dedupe corregido a source + external_id
-* Reintento de raw_jobs no procesados
-* Alembic configurado para migraciones futuras
-* Frontend con mitigación XSS y gestión de estado por vacante
+* application_status, dedupe corregido, Alembic configurado, XSS mitigado en frontend
+
+### v1.1.1 ✅
+* Paginación y búsqueda server-side (JobRepository.search())
+* Manejo de errores HTTP visible en frontend
+
+### v1.1.2 ✅
+* Responsive completo + frontend modularizado (index.html + style.css + app.js)
+* Facets dinámicos con conteos en tiempo real
+* Fix de work_mode en GetOnBoardNormalizer (bug de origen corregido)
 
 ---
 

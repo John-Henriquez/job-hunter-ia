@@ -17,8 +17,8 @@ capas: primero confiabilidad y flujo personal, luego analitica, IA y producto.
       requiere migracion o `ALTER TABLE` en bases existentes.
 - [x] Filtros, busqueda y paginacion server-side en `/jobs/`.
 - [x] Manejo consistente de errores HTTP en el frontend.
-- [ ] Responsive real para mobile/tablet.
-- [ ] Facets dinamicos para filtros.
+- [x] Responsive real para mobile/tablet.
+- [x] Facets dinamicos para filtros.
 
 ## v1.1.0 - Seguimiento Personal
 

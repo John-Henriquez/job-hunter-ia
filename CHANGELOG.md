@@ -1,6 +1,40 @@
 # Changelog
 
-## [v1.2.0] - 2026-06-24
+## [v1.1.2] - 2026-06-25
+
+### Added
+- `JobRepository.search()`: filtros y búsqueda ejecutados en SQL (ilike, offset, limit)
+- `JobRepository.get_facets()`: conteos dinámicos por campo, excluyendo el filtro propio de cada select
+- `GET /jobs/facets`: endpoint que expone los facets con conteos en tiempo real
+- Frontend modularizado: index.html + style.css + app.js (antes un solo archivo ~900 líneas)
+- Responsive completo: sidebar colapsable con overlay en mobile, tabla con scroll horizontal, modal a pantalla completa
+- Banner de error visible en frontend para fallos de red o HTTP
+- Debounce de 350ms en búsqueda de texto
+- Selects de filtros poblados dinámicamente con conteos reales (ej: "Senior (457)")
+
+### Changed
+- Frontend ya no carga todos los jobs en memoria — cada filtro/página dispara una request
+- apiFetch() extrae el campo `detail` de errores JSON de FastAPI
+- updateApplicationStatus() recarga desde el servidor en vez de mutar estado local
+
+### Fixed
+- `GetOnBoardNormalizer.normalize()`: work_mode ahora se mapea correctamente en origen
+  (antes guardaba valores crudos como fully_remote, remote_local, no_remote sin normalizar)
+- Re-normalización de work_mode en datos existentes (998 on-site, 589 remote, 459 hybrid)
+
+### Known Issues
+- El campo `modality` mezcla taxonomías de distintos providers sin normalizar:
+  GetOnBoard usa categorías limpias (Full time, Part time, Freelance), Arbeitnow
+  trae valores en alemán sin traducir (berufserfahren, geschäftsleitung, etc.)
+  Pendiente de resolver junto con normalización cross-provider (categorías también
+  afectadas: 95 valores distintos entre ambas fuentes).
+
+### Results
+- Deuda técnica del sprint "Antes de Escalar" cerrada por completo
+- Paginación y filtros escalan más allá de los ~2000 registros actuales
+- Errores de conexión o HTTP visibles para el usuario en vez de fallar en silencio
+
+## [v1.1.1] - 2026-06-24
 
 ### Added
 - `JobRepository.search()`: filtros y paginación ejecutados en SQL (ilike, offset, limit)

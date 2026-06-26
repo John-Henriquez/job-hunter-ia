@@ -64,6 +64,27 @@ def list_jobs(
         "data": [serialize_job(j) for j in jobs],
     }
 
+@router.get("/facets")
+def get_facets(
+    source: str = Query(None),
+    category: str = Query(None),
+    seniority: str = Query(None),
+    modality: str = Query(None),
+    work_mode: str = Query(None),
+    application_status: str = Query(None),
+    search: str = Query(None),
+    db: Session = Depends(get_db),
+):
+    repository = JobRepository(db)
+    return repository.get_facets(
+        source=source,
+        category=category,
+        seniority=seniority,
+        modality=modality,
+        work_mode=work_mode,
+        application_status=application_status,
+        search=search,
+    )
 
 @router.get("/{job_id}")
 def get_job(job_id: int, db: Session = Depends(get_db)):
@@ -94,3 +115,4 @@ def update_application_status(
         raise HTTPException(status_code=404, detail="Job no encontrado")
 
     return serialize_job(job, include_description=True)
+

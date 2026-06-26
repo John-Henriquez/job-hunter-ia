@@ -91,3 +91,44 @@ class JobRepository:
         self.db.delete(job)
         self.db.commit()
         return True
+    
+    def get_facets(
+        self,
+        source: str = None,
+        category: str = None,
+        seniority: str = None,
+        modality: str = None,
+        work_mode: str = None,
+        application_status: str = None,
+        search: str = None,
+    ) -> dict:
+        from sqlalchemy import func, or_
+
+        filters = {
+            'source': source, 'category': category, 'seniority': seniority,
+            'modality': modality, 'work_mode': work_mode,
+            'application_status': application_status, 'search': search,
+        }
+
+        def field_counts(column, exclude_key):
+            query = self.db.query(column, func.count(Job.id))
+            for key, value in filters.items():
+                if key == exclude_key or not value:
+                    continue
+                if key == 'search':
+                    pattern = f"%{value}%"
+                    query = query.filter(or_(Job.title.ilike(pattern), Job.company.ilike(pattern)))
+                else:
+                    query = query.filter(getattr(Job, key) == value)
+
+            query = query.filter(column.isnot(None)).group_by(column).order_by(func.count(Job.id).desc())
+            return {value: count for value, count in query.all()}
+    
+        return {
+            'source': field_counts(Job.source, 'source'),
+            'category': field_counts(Job.category, 'category'),
+            'seniority': field_counts(Job.seniority, 'seniority'),
+            'modality': field_counts(Job.modality, 'modality'),
+            'work_mode': field_counts(Job.work_mode, 'work_mode'),
+            'application_status': field_counts(Job.application_status, 'application_status'),
+        }
